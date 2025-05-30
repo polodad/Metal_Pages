@@ -1,19 +1,38 @@
 <?php
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\ListingController;
+use App\Http\Controllers\ListingController; // ← Importa tu controlador
 
-// Ruta de bienvenida
 Route::get('/', function () {
-    return redirect()->route('listings.index');
-})->name('home');
+    return Inertia::render('Welcome', [
+        'canLogin'       => Route::has('login'),
+        'canRegister'    => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion'     => PHP_VERSION,
+    ]);
+});
 
-// Rutas protegidas con autenticación
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    // Rutas de listados
-    Route::get('/listings', [ListingController::class, 'index'])->name('listings.index');
-    Route::get('/listings/create', [ListingController::class, 'create'])->name('listings.create');
-    Route::post('/listings', [ListingController::class, 'store'])->name('listings.store');
-    Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    // List all listings
+    Route::get('/listings', [ListingController::class, 'index'])
+        ->name('listings.index');
+
+    // Show form to create a new listing
+    Route::get('/listings/create', [ListingController::class, 'create'])
+        ->name('listings.create');
+
+    // Persist new listing
+    Route::post('/listings', [ListingController::class, 'store'])
+        ->name('listings.store');
 });
