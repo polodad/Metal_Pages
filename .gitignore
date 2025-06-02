@@ -1,0 +1,29 @@
+# Ignore everything in the root except specific files
+/*
+!/.gitignore
+!/docs/
+
+# Laravel specific
+/laravel_app/
+
+# Node modules
+/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
